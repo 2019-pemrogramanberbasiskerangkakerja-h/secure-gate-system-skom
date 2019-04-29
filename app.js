@@ -6,6 +6,10 @@ var bodyParser = require('body-parser')
 var mysql = require('mysql')
 // var nunjucks = require('nunjucks')
 
+var registerController = require('./register.js');
+ 
+
+
 var connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'root',
@@ -28,29 +32,38 @@ app.use(bodyParser.json());
 // 	response.sendFile(path.join(__dirname + '/login.html'));
 // });
 
-// app.get('/', function(req, res){
-//     res.sendFile(__dirname + '/public/login.html')
-// });
+app.get('/', function(req, res){
+    res.sendFile(__dirname + '/public/login.html')
+});
+
+app.get('/register', function(req, res){
+    res.sendFile(__dirname + '/public/register.html')
+});
+
+
+app.post('/register', registerController.register);
 
 app.post('/auth', function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
 	if (username && password) {
-		connection.query('SELECT * FROM accounts WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
+		connection.query('SELECT * FROM user WHERE nrp = ? AND password = ?', [username, password], function(error, results, fields) {
 			if (results.length > 0) {
 				request.session.loggedin = true;
 				request.session.username = username;
 				response.redirect('/home');
 			} else {
-				response.send('Incorrect Username and/or Password!');
+				response.send('Incorrect NRP and/or Password!');
 			}			
 			response.end();
 		});
 	} else {
-		response.send('Please enter Username and Password!');
+		response.send('Please enter NRP and Password!');
 		response.end();
 	}
 });
+
+
 
 app.get('/home', function(request, response) {
 	if (request.session.loggedin) {
