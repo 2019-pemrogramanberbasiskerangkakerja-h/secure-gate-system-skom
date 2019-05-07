@@ -1,89 +1,81 @@
-var express = require('express')
-var path = require('path')
-// var cookieParser = require('cookie-parser')
-var session = require('express-session')
-var bodyParser = require('body-parser')
-var mysql = require('mysql')
-// var nunjucks = require('nunjucks')
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var nunjucks  = require('nunjucks');
 
-var registerController = require('./register.js');
- 
+var root = express();
 
-
-var connection = mysql.createConnection({
-	host     : 'localhost',
-	user     : 'root',
-	password : '',
-	database : 'SCS_SKOM'
-});
-
-var app = express()
-
-app.use(session({
-	secret: 'secret',
-	resave: true,
-	saveUninitialized: true
+root.use(cookieParser());
+root.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
 }));
 
-app.use(bodyParser.urlencoded({extended : true}));
-app.use(bodyParser.json());
+root.use(bodyParser.urlencoded({extended : true}));
+root.use(bodyParser.json());
 
-// app.get('/', function(request, response) {
+// root.use(express.static(__dirname + '/assets'));
+
+
+//Apply nunjucks and add custom filter and function (for example).
+root.set('view engine', 'njk');
+var env = nunjucks.configure(['views/'], { // set folders with templates
+    autoescape: true,
+    express: root
+});
+
+// env.addFilter('myFilter', function(obj, arg1, arg2) {
+//     console.log('myFilter', obj, arg1, arg2);
+//     // Do smth with obj
+//     return obj;
+// });
+// env.addGlobal('myFunc', function(obj, arg1) {
+//     console.log('myFunc', obj, arg1);
+//     // Do smth with obj
+//     return obj;
+// });
+
+// //----login
+// var auth = require('./controller/auth.js');
+// root.use('/auth', auth);
+// //----endlogin
+
+// //----login
+// var register = require('./controller/register.js');
+// root.use('/register', register);
+// //----endlogin
+
+// //----dosen
+// var dosen = require('./controller/dosen.js');
+// root.use('/dosen', dosen);
+// //----enddosen
+
+//----mahasiswa
+var gate = require('./controller/gate.js');
+root.use('/gates', gate);
+
+var gate = require('./controller/user.js');
+root.use('/users', gate);
+
+var gatesystem = require('./controller/gatesystem.js');
+root.use('/', gatesystem);
+
+var register = require('./controller/register.js');
+root.use('/register', register);
+
+var login = require('./controller/login.js');
+root.use('/login', login);
+
+
+
+//----endmahasiswa
+
+// //dashboard
+// root.get('/dashboard', function(request, response) {
 // 	response.sendFile(path.join(__dirname + '/login.html'));
 // });
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/public/login.html')
-});
-
-app.get('/register', function(req, res){
-    res.sendFile(__dirname + '/public/register.html')
-});
-
-
-app.post('/register', registerController.register);
-
-app.post('/auth', function(request, response) {
-	var username = request.body.username;
-	var password = request.body.password;
-	if (username && password) {
-		connection.query('SELECT * FROM user WHERE nrp = ? AND password = ?', [username, password], function(error, results, fields) {
-			if (results.length > 0) {
-				request.session.loggedin = true;
-				request.session.username = username;
-				response.redirect('/home');
-				var time = new Date().getTime()
-				connection.query('INSERT INTO log (id_gate_log, nrp_log, message, time) VALUES (?, ?, ?, ?)', ['1', username, 'Login user berhasil', time], function(err, result) {
-	      	if (err) {
-	        	console.log("Error di insert log")
-	      	}})
-			} else {
-				response.send('Incorrect NRP and/or Password!');
-				connection.query('INSERT INTO log (id_gate_log, nrp_log, message, time) VALUES (?, ?, ?, ?)', ['1', username, 'Login user gagal', Date.now()], function(err, result) {
-	      	if (err) {
-	        	console.log("Error di insert log")
-	      	}})
-			}			
-			response.end();
-		});
-   		
-	} else {
-		response.send('Please enter NRP and Password!');
-		response.end();
-	}
-});
-
-
-
-app.get('/home', function(request, response) {
-	if (request.session.loggedin) {
-		response.send('Welcome back, ' + request.session.username + '!');
-	} else {
-		response.send('Please login to view this page!');
-	}
-	response.end();
-});
-
-app.listen(4000, function() {
-    console.log('listening on port 4000 !');
-});
+module.exports = root;
