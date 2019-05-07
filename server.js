@@ -1,7 +1,7 @@
 var app = require("./app");
 
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 3339;
 
 app.listen(PORT, '0.0.0.0', function() {
-    console.log('Listening to port:  ' + 3000);
+    console.log('Listening to port:  ' + PORT);
 });
