@@ -310,14 +310,16 @@ $(document).ready(function(){
                         <td>
                           {% set infoUrl = "users/".concat(user.id_user) %}
                           <form action={{infoUrl}} method="GET">
-                            <input type="submit" class="btn btn-info" value="View">
+                          <input type="submit" class="btn btn-info" value="View">
                           </form>
+
                         </td>
                         <td>
                           {% set url = "users/delete/".concat(user.id_user) %}
                           <form action={{url}} method="POST">
                             <input type="submit" class="btn btn-danger" value="Delete">
                           </form>
+
                         </td>
                     </tr>
 {% endfor %}
@@ -379,21 +381,22 @@ $(document).ready(function(){
   <div id="editEmployeeModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form action="users/add" method="POST">
+        {% set infoUrl = "users/".concat(user.id_user) %}
+				<form action={{infoUrl}} method="GET">
 					<div class="modal-header">
 						<h4 class="modal-title">Add User</h4>
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					</div>
           {% if (results.length === 1)%}
-          {% for user in results %}
+          {% for user in results %} 
 					<div class="modal-body">
 						<div class="form-group">
 							<label>NRP</label>
-							<input type="text" name="nrp" class="form-control" value={{user.nrp}} disabled>
+							<input type="text" name="nrp" class="form-control" placeholder="{{user.nrp}}" disabled>
 						</div>
             <div class="form-group">
               <label>Nama</label>
-              <input type="text" name="nama" class="form-control" value={{user.nama}} disabled>
+              <input type="text" name="nama" class="form-control" placeholder="{{user.nama}}" disabled>
             </div>
             <div class="form-group">
               <p>Role</p>
@@ -411,7 +414,8 @@ $(document).ready(function(){
 	<div id="deleteEmployeeModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form action="" method="GET">
+        {% set url = "users/delete/".concat(user.id_user) %}
+			 <form action={{url}} method="POST">
 					<div class="modal-header">
 						<h4 class="modal-title">Delete Employee</h4>
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
