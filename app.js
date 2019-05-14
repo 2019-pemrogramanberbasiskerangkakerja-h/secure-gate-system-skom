@@ -57,8 +57,8 @@ var env = nunjucks.configure(['views/'], { // set folders with templates
 var gate = require('./controller/gate.js');
 root.use('/gates', gate);
 
-var gate = require('./controller/user.js');
-root.use('/users', gate);
+var user = require('./controller/user.js');
+root.use('/users', user);
 
 var gatesystem = require('./controller/gatesystem.js');
 root.use('/', gatesystem);
