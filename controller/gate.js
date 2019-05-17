@@ -23,7 +23,7 @@ router.get('/:id', function(request, response) {
 	})
 })
 
-router.post('/delete/:id', function(request, response) {
+router.delete('/delete/:id', function(request, response) {
 	let deleteId = request.params.id
 	let sql = "DELETE FROM gate WHERE id_gate=".concat(deleteId)
 	let query = db.query(sql, (err, results, fields) => {
@@ -35,7 +35,10 @@ router.post('/delete/:id', function(request, response) {
 router.post('/add', function(request, response) {
 	  // console.log("req",req.body);
 	  var gate={
-	    "nama_gate":request.body.name
+	    "nama_gate":request.body.name,
+			"open":request.body.open,
+			"close":request.body.close,
+			"role":request.body.role
 	  }
 	  db.query('INSERT INTO gate SET ?',gate, function (error, results, fields) {
 	  if (error) {

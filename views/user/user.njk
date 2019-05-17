@@ -344,7 +344,7 @@ $(document).ready(function(){
 	<div id="addEmployeeModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form action="users/add" method="POST">
+				<form action="users" method="POST">
 					<div class="modal-header">
 						<h4 class="modal-title">Add User</h4>
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -388,7 +388,7 @@ $(document).ready(function(){
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					</div>
           {% if (results.length === 1)%}
-          {% for user in results %} 
+          {% for user in results %}
 					<div class="modal-body">
 						<div class="form-group">
 							<label>NRP</label>

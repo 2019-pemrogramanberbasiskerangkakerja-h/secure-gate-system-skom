@@ -33,7 +33,7 @@ router.post('/delete/:id', function(request, response) {
 })
 
 
-router.post('/add', function(request, response) {
+router.post('/', function(request, response) {
 	  // console.log("req",req.body);
 	  var user={
 	    "nrp":request.body.nrp,
