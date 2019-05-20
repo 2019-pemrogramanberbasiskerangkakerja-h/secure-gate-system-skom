@@ -2,6 +2,15 @@ var connection = require("../config");
 var express = require('express');
 var router = express.Router();
 
+checkRole = (gateRole, userRole) => {
+  if (userRole === 'Dosen')
+    return true
+  else if (userRole === gateRole)
+    return true
+  else
+    return false
+}
+
 router.get('/', function(request, response) {
   let sql = "SELECT * FROM gate"
   let query = connection.query(sql, (err, results, fields) => {
@@ -17,10 +26,12 @@ router.post('/auth', function(request, response) {
   var current = new Date().toLocaleTimeString();
   let openTime  = ''
   let closeTime = ''
+  let gateRole = ''
 
-  connection.query('SELECT open, close FROM gate where id_gate = ?', [request.body.id_gate_log], function(error, results, fields) {
+  connection.query('SELECT open, close, role FROM gate where id_gate = ?', [request.body.id_gate_log], function(error, results, fields) {
     openTime = results[0].open
     closeTime = results[0].close
+    gateRole = results[0].role
   })
 
 	if (username && password) {
@@ -29,7 +40,15 @@ router.post('/auth', function(request, response) {
 				request.session.loggedin = true;
 				request.session.username = username;
 
-        if (current > openTime && current < closeTime){
+        let userRole = results[0].role
+        let roleAccess = checkRole(gateRole, userRole)
+
+        let errorMsg = ''
+        errorMsg = !roleAccess
+                    ? 'Anda tidak mempunyai hak akses membuka gate ini'
+                    : `Gate ini dibuka pukul ${openTime} dan ditutup ${closeTime}`
+
+        if ((current > openTime && current < closeTime) && roleAccess){
           response.send(`${username} berhasil Login! Selamat datang!`);
         var log={
     	    "id_gate_log":request.body.id_gate_log,
@@ -43,7 +62,7 @@ router.post('/auth', function(request, response) {
 	      	}})
         }
         else {
-          response.send(`Gate ini dibuka pukul ${openTime} dan ditutup ${closeTime}`)
+          response.send(errorMsg)
 
           var log={
       	    "id_gate_log":request.body.id_gate_log,

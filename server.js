@@ -6,6 +6,6 @@ var app = require("./app");
 //     console.log('Listening to port:  ' + PORT);
 // });
 
-app.listen(8080, '0.0.0.0', function() {
+app.listen(8080, '10.151.36.39', function() {
     console.log('Listening to port:  8080');
 });
