@@ -23,7 +23,7 @@ router.get('/:id', function(request, response) {
 	})
 })
 
-router.post('/delete/:id', function(request, response) {
+router.delete('/delete/:id', function(request, response) {
 	let deleteId = request.params.id
 	let sql = "DELETE FROM user WHERE id_user=".concat(deleteId)
 	let query = db.query(sql, (err, results, fields) => {

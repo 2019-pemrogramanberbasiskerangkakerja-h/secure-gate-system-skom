@@ -1,6 +1,8 @@
 var db = require("../config");
 var express = require('express');
 var router = express.Router();
+//var res = require('./response');
+
 
 router.get('/', function(request, response) {
 	let sql = "SELECT * FROM gate";
@@ -23,14 +25,15 @@ router.get('/:id', function(request, response) {
 	})
 })
 
-router.post('/delete/:id', function(request, response) {
-	let deleteId = request.params.id
-	let url = '/gates/delete'.concat(deleteId)
-	let sql = "DELETE FROM gate WHERE id_gate=".concat(deleteId)
-	let query = db.query(sql, (err, results, fields) => {
-		if(err) throw err;
-		response.redirect('/gates')
-	})
+router.delete('/delete/:id', function(request, response) {
+ let deleteId = request.params.id
+ let url = '/gates/delete'.concat(deleteId)
+ let sql = "DELETE FROM gate WHERE id_gate=".concat(deleteId)
+ let query = db.query(sql, (err, results, fields) => {
+  if(err) throw err;
+  response.redirect('/gates')
+        //res.ok("Delete Gate Success!", response)
+ })
 })
 
 router.post('/add', function(request, response) {

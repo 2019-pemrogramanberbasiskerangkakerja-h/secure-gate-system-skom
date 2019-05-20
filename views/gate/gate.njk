@@ -323,8 +323,10 @@ $(document).ready(function(){
                         <th>
                             {% set Url = "gates/delete/".concat(gate.id_gate) %}
 
-                            <form action={{Url}} method="POST">
+                            <form action="{{Url}}?_method=DELETE" method="POST">
+                              <input type="hidden" name="_method" value="DELETE">
                               <input type="submit" class="btn btn-danger" value="Delete">
+
                             </form>
                         </th>
                     </tr>

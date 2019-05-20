@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var nunjucks  = require('nunjucks');
+const methodOverride = require('method-override');
 
 var root = express();
 
@@ -55,9 +56,11 @@ var env = nunjucks.configure(['views/'], { // set folders with templates
 
 //----mahasiswa
 var gate = require('./controller/gate.js');
+root.use(methodOverride('_method'));
 root.use('/gates', gate);
 
 var user = require('./controller/user.js');
+root.use(methodOverride('_method'));
 root.use('/users', user);
 
 var gatesystem = require('./controller/gatesystem.js');

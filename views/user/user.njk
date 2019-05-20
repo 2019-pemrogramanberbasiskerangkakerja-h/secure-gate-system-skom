@@ -316,7 +316,9 @@ $(document).ready(function(){
                         </td>
                         <td>
                           {% set url = "users/delete/".concat(user.id_user) %}
-                          <form action={{url}} method="POST">
+
+                          <form action="{{url}}?_method=DELETE" method="POST">
+                            <input type="hidden" name="_method" value="DELETE">
                             <input type="submit" class="btn btn-danger" value="Delete">
                           </form>
 
